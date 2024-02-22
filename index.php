@@ -1,58 +1,48 @@
 
 <?php
 
+// TITOLO HEAD
+$title = 'Home Page';
+
+// AVVIO SESSIONE
+session_start();
+
+// ELIMINO SESSIONE SE L'UTENTE TORNA INDIETRO
+if(isset($_GET['new'])){
+    session_destroy();
+}
+
+// DATI
 require_once __DIR__ .'/includes/data/info.php';
 
 require_once __DIR__ .'/includes/function/function.php';
 
+// VERIFICO VALORE 
 $password = $_GET['password'] ?? '';
 
+// PASSO ARGOMENTI ALLA FUNZIONE CHE GENERA LA PASSWORD
 $generate_password = get_password($password, $characters, $num_total_characters);
+
+// SE L'UTENTE HA INVIATO IL FORM PER GENERARE UNA PASSWORD LO MANDO ALLA PAGINE SUCCESSIVA
+if($generate_password){
+    $_SESSION['password'] = $generate_password;
+    header('Location: ./password_user.php');
+};
 
 ?>
 
 
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!--  BOOTSTRAP -->
-    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.2/css/bootstrap.min.css'
-        integrity='sha512-b2QcS5SsA8tZodcDtGRELiGv5SaKSk1vDHDaQRda0htPYWZ6046lr3kJ5bAAQdpV2mmA/4v0wQF9MyU6/pDIAg=='
-        crossorigin='anonymous' />
-    <title>Document</title>
-</head>
+<html lang="en" data-bs-theme="dark">
+
+<!-- HEAD -->
+<?php include __DIR__ . '/includes/template/head.php' ?>
 <body>
     <div class="container mt-5">
-        <div class="alert alert-info">
-            <h6>La tua password generata è: <?= $generate_password ?></h6>
-        </div>
-        <div class="card">
-            <form action="" method="get" class="p-3">
-                <div class="d-flex justify-content-between align-items-center">
-                    <label for="passowrd_user">Scegli quanti caratteri avrà la tua Passowrd</label>
-                    <input class="w-25" type="number" name="password" placeholder="Lunghezza password" id="passowrd_user" min="1" max="10">
-                </div>
-                <div class="d-flex justify-content-between align-items-center  mt-3">
-                    <p>Consenti ripetizione di uno o più caratteri</p>
-                    <div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="yes_repetition" id="yes_repetition">
-                            <label class="form-check-label" for="yes_repetition"> Si </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="no_repetition" id="no_repetition">
-                            <label class="form-check-label" for="no_repetition"> No </label>
-                        </div>
-                    </div>
-                </div>
-                <?php if($generate_password) : ?>
-                    <button type="submit" class="btn btn-outline-secondary">Annulla</button>
-                <?php else : ?>
-                    <button type="submit" class="btn btn-outline-secondary">Invia</button>
-                <?php endif; ?>
-            </form>
+        <h1 class="text-center text-danger">GENERA LA TUA PASSWORD</h1>
+        <div class="card w-50 m-auto">
+            <!-- FORM -->
+            <?php require __DIR__ . '/includes/template/form.php' ?>
         </div>
     </div>
 </body>
